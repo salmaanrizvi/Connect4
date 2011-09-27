@@ -1,0 +1,53 @@
+import javax.swing.JOptionPane;
+import info.gridworld.actor.Actor;
+import info.gridworld.grid.Grid;
+import info.gridworld.grid.Location;
+
+/*
+ * RainPieces simulates a Connect 4 power up in which three red and three black pieces  
+ * are randomly dropped onto the board.
+ */
+public class RainPieces extends PowerUp
+{
+	//Constructs a new RainPieces object with Grid gr and Connect4Board b.
+	public RainPieces(Grid<Actor> gr, Connect4Board b)
+	{ super(gr, b); }
+	
+	//Creates 3 black and 3 red pieces and randomly places them throughout the Grid and 
+	//Connect4Board.
+	public void act()
+	{
+		for(int i = 0; i < 3; i++)
+		{
+			int bCol = randomCol();
+			int bRow = board.getValidDropRow(bCol);
+			while(!board.isValid(bRow, bCol))
+			{
+				bCol = randomCol();
+				bRow = board.getValidDropRow(bCol);
+			}
+			board.place(new BlackPiece(), bCol);
+			Actor a = grid.put(new Location(bRow, bCol), new BlackPiece());
+			if(a != null)
+				a.act();
+			
+			int rCol = randomCol();
+			int rRow = board.getValidDropRow(rCol);
+			while(!board.isValid(rRow, rCol))
+			{
+				rCol = randomCol();
+				rRow = board.getValidDropRow(rCol);
+			}
+			board.place(new RedPiece(), rCol);
+			Actor b = grid.put(new Location(rRow, rCol), new RedPiece());
+			if(b != null)
+				b.act();
+		}
+		JOptionPane.showMessageDialog(null, "IT'S RAINING PIECES!", "Power Up!", 
+JOptionPane.OK_OPTION);
+	}
+	
+	//Returns a random int within 0 <= int < 6.
+	public int randomCol()
+	{ return (int)(Math.random()*board.size()); }
+}

@@ -1,0 +1,47 @@
+import info.gridworld.actor.Actor;
+import info.gridworld.grid.Grid;
+import info.gridworld.grid.Location;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+
+/*
+ * ColorReversal simulates a power up which reverses the color of every single piece on 
+ * the board. Each player is still the same color, but each color of every piece on the 
+ * board is switched.
+ */
+public class ColorReversal extends PowerUp
+{
+	//Constructs a new ColorReversal object with Grid gr and Connect4Board b.
+	public ColorReversal(Grid<Actor> gr, Connect4Board b)
+	{ super(gr, b); }
+	
+	//Goes through each occupied location and replaces it with an opposite color piece.
+	public void act()
+	{
+		reverseConnect4Board();
+		List<Location> occLocs = grid.getOccupiedLocations();
+		for(Location loc : occLocs)
+		{
+			if(grid.get(loc) instanceof RedPiece)
+				grid.put(loc, new BlackPiece());
+			else if(grid.get(loc) instanceof BlackPiece)
+				grid.put(loc, new RedPiece());
+		}
+		JOptionPane.showMessageDialog(null, "Colors have been reversed!!", "Power Up!", JOptionPane.OK_OPTION);
+	}
+	
+	//Has the same effect as the act() method except reverses the color on the 
+//Connect4Board.
+	private void reverseConnect4Board()
+	{
+		Piece[][] temp = board.getBoard();
+		for(int row = 0; row < board.size(); row++)
+			for(int col = 0; col < board.size(); col++)
+				if(temp[row][col] != null)
+					if(temp[row][col].toString().equals("Red"))
+						temp[row][col] = new BlackPiece();
+					else
+						temp[row][col] = new RedPiece();
+	}
+}

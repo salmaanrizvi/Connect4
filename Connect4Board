@@ -1,0 +1,140 @@
+/*
+ * Connect4Board represents a Connect 4 board in which game piece are placed by players.
+ */
+public class Connect4Board
+{
+	private Piece[][] gameBoard;
+	private final int SIZE = 6;
+	
+	//Constructs a new Connect4Board object.
+	public Connect4Board()
+	{ gameBoard = new Piece[SIZE][SIZE]; }
+	
+	//Places Piece p into the bottom most spot in column number col. Returns the row in 
+//which the piece was placed, -1 if the column was full.
+	public int place(Piece p, int col)
+	{	
+		int row = getValidDropRow(col);
+		gameBoard[row][col] = p;
+		return row;
+	}
+	
+	//Returns the row in which Player p's piece dropped to in column col, -1 if column 
+//was full.
+	public int getValidDropRow(int col)
+	{
+		if(isValid(0, col)) //checks whether col is valid
+		{
+			for(int row = SIZE - 1; row >= 0; row--)
+			{
+				if(gameBoard[row][col] == null)
+					return row;
+			}
+		}
+		return -1;
+	}
+	
+	//Returns true if a player in row "row" has won, false otherwise.
+	public boolean checkRowWin(int row)
+	{
+		int count = 1;
+		for(int col = 0; col < SIZE - 1; col++)
+		{
+			Piece one = gameBoard[row][col];
+			Piece two = gameBoard[row][col + 1];
+			if(count == 4)
+				return true;
+			if(one == null || two == null || !(one.equals(two)))
+				count = 1;
+			else //Piece one and two were equal
+				count++;
+		}
+		return count == 4;
+	}
+	
+	//Returns true if a player in column "col" has won, false otherwise.
+	public boolean checkColWin(int col)
+	{
+		int count = 1;
+		for(int row = SIZE - 1; row > 0; row--)
+		{
+			Piece one = gameBoard[row][col];
+			Piece two = gameBoard[row - 1][col];
+			if(count == 4)
+				return true;
+			if(one == null || two == null || !(one.equals(two)))
+				count = 1;
+			else
+				count++;
+		}
+		return count == 4;
+	}
+	
+	//Returns true if a player has won in the diagonal starting at (startRow, startCol) 
+//incrementing startCol and startRow, false otherwise.
+	public boolean checkPosDiagWin(int startRow, int startCol)
+	{
+		int count = 1;
+		while(isValid(startRow + 1, startCol + 1))
+		{
+			Piece one = gameBoard[startRow][startCol];
+			Piece two = gameBoard[++startRow][++startCol];
+			if(count == 4)
+				return true;
+			if(one == null || two == null || !one.equals(two))
+				count = 1;
+			else
+				count++;
+		}
+		return count == 4;
+	}
+	
+	//Returns true if a player has won in the diagonal starting at (startRow, startCol) 
+//incrementing startCol and decrementing startRow, false otherwise.
+	public boolean checkNegDiagWin(int startRow, int startCol)
+	{
+		int count = 1;
+		while(isValid(startRow - 1, startCol + 1))
+		{
+			Piece one = gameBoard[startRow][startCol];
+			Piece two = gameBoard[--startRow][++startCol];
+			if(count == 4)
+				return true;
+			
+			if(one == null || two == null || !one.equals(two))
+				count = 1;
+			else
+				count++;
+		}
+		return count == 4;
+	}
+	
+	//Returns true if row and col are within the limits of the board, false otherwise.
+	public boolean isValid(int row, int col)
+	{
+		if(row < 0 || row >= SIZE || col < 0 || col >= SIZE)
+			return false;
+		return true;
+	}
+	
+	//Returns the game board "gameBoard."
+	public Piece[][] getBoard()
+	{ return gameBoard; }
+	
+	//Returns the size of the game board.
+	public int size()
+	{ return SIZE; }
+	
+	//Returns Connect4Board in String form.
+	public String toString()
+	{
+		String s = "";
+		for(Piece[] p : gameBoard)
+		{
+			for(Piece piece : p)
+				s += piece + " ";
+			s += "\n";
+		}
+		return s;
+	}
+}

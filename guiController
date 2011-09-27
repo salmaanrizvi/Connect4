@@ -1,0 +1,191 @@
+import info.gridworld.grid.Location;
+import java.util.List;
+import java.util.Scanner;
+import javax.swing.JOptionPane;
+
+/*
+ * guiController simulates a graphical, electronic Connect 4
+ * controller. The controller contains the graphical Connect 4,two players, and the  
+ * controller keeps track of the players turn and checks for wins. The guiController also 
+ * controls the text based game.
+ */
+public class guiController
+{
+	private Connect4GUI gui;
+	private Player p1, p2;
+	private boolean p1Turn, hasWon, hasColorReversed;
+	private Scanner sc;
+	
+	//Constructs a new guiContoller object.
+	public guiController()
+	{
+		gui = new Connect4GUI();
+		p1 = new Player("RRRR", gui.board());
+		p2 = new Player("BBBB", gui.board());
+		sc = new Scanner(System.in);
+		p1Turn = true;
+		placeColorReversal();
+		placeColCrusher();
+		placeBlast();
+		placeRainPieces();
+		gui.world().show();
+	}
+	
+	//Plays Connect 4. As long as a player has not won, the game continues on, 
+//alternating between player 1 and player 2's turn.
+	public void playConnect4()
+	{
+		display();
+		while(!hasWon)
+		{
+			if(p1Turn)
+			{
+				playerTurn(p1, p2);
+				p1Turn = false;
+			}
+			else //player 2's turn
+			{
+				playerTurn(p2, p1);
+				p1Turn = true;
+			}
+		}
+	}
+	
+	//Receives input from the Player player, checks if the column is acceptable, places 
+//the piece and prints out the board.
+	public void playerTurn(Player player, Player otherP)
+	{
+		System.out.print(player + ", enter column to drop piece: ");
+		String s = JOptionPane.showInputDialog(player + ", enter column to drop piece: ");
+		sc = new Scanner(s);
+		int col = sc.nextInt() - 1;
+		checkCol(col, player, otherP);
+		updateGUI();
+		System.out.println("");
+		System.out.println(gui.board());
+		checkWin();
+		if(hasWon && hasColorReversed)
+		{
+			System.out.println(otherP + " won!");
+			JOptionPane.showMessageDialog(null, player + " won!", "Game Over!", 
+JOptionPane.INFORMATION_MESSAGE);
+		}
+		else if(hasWon)
+		{
+			System.out.println(player + " won!");
+			JOptionPane.showMessageDialog(null, player + " won!", "Game Over!", 
+JOptionPane.INFORMATION_MESSAGE);
+		}
+		if(!hasPowerUps())
+			refreshPowerUps();
+	}
+	
+	//Checks whether the column that Player "player" is valid. If not, checkCol is 
+//called again until a valid column is entered.
+	public void checkCol(int col, Player player, Player other)
+	{
+		if(!player.checkCol(col))
+		{
+			System.out.print("That column is not valid. Try again: ");
+			String s = JOptionPane.showInputDialog("That column is not valid. Try again: ");
+			sc = new Scanner(s);
+			col = sc.nextInt() - 1;
+			checkCol(col, player, other);
+		}
+		else //player entered a valid column number
+			if(gui.add(player, col) instanceof ColorReversal)
+				hasColorReversed = true;
+	}
+	
+	//Checks all possible win possibilities. If a player has won in any possible way, 
+//hasWon is set to true.
+	public void checkWin()
+	{ 
+		for(int i = 0; i < gui.board().size(); i++)
+			if(gui.board().checkColWin(i)||gui.board().checkRowWin(i))
+				hasWon = true;
+		
+		if(gui.board().checkPosDiagWin(2,0) || gui.board().checkPosDiagWin(1,0)
+		   || gui.board().checkPosDiagWin(0,0) || gui.board().checkPosDiagWin(0,1)
+		   || gui.board().checkPosDiagWin(0,2))
+			hasWon = true;
+		
+		else if(gui.board().checkNegDiagWin(3,0) || gui.board().checkNegDiagWin(4, 0)
+		    || gui.board().checkNegDiagWin(5,0) || gui.board().checkNegDiagWin(5,1)
+		    || gui.board().checkNegDiagWin(5, 2))
+		      hasWon = true;
+	}
+	
+	//Returns Connect4GUI gui.
+	public Connect4GUI getGUI()
+	{ return gui; }
+	
+	//Repaints the Grid to update any new pieces added.
+	public void updateGUI()
+	{ gui.world().show(); }
+	
+	//Prints out welcome display and the game board.
+	public void display()
+	{
+JOptionPane.showMessageDialog(null, "Get Ready To Play Connect 4!", 
+  "Welcome!", JOptionPane.INFORMATION_MESSAGE);
+		System.out.println("Get Ready To Play Connect 4!");
+		JOptionPane.showMessageDialog(null, p1 + "'s turn first!");
+		System.out.println(p1 + "'s turn first!");
+		System.out.println("");
+		System.out.println(gui.board());
+	}
+	
+	//Places a ColorReversal power up at a random location.
+	public void placeColorReversal()
+	{ 
+		ColorReversal cr = new ColorReversal(gui.grid(), gui.board());
+		cr.place(cr.randomLoc());
+	}
+	
+	//Places a ColCrusher power up at a random location.
+	public void placeColCrusher()
+	{
+		ColCrusher cc = new ColCrusher(gui.grid(), gui.board());
+		cc.place(cc.randomLoc());
+		cc = new ColCrusher(gui.grid(), gui.board());
+		cc.place(cc.randomLoc());
+	}
+	
+	//Places a Blaster power up at a random location.
+	public void placeBlast()
+	{
+		Blast b = new Blast(gui.grid(), gui.board());
+		b.place(b.randomLoc());
+		b = new Blast(gui.grid(), gui.board());
+		b.place(b.randomLoc());
+	}
+	
+	//Places a RainPieces power up at a random location.
+	public void placeRainPieces()
+	{
+		RainPieces rp = new RainPieces(gui.grid(), gui.board());
+		rp.place(rp.randomLoc());
+	}
+	
+	//Returns true if at least one power up remains on the grid, false otherwise.
+	public boolean hasPowerUps()
+	{
+		List<Location> occLocs = gui.grid().getOccupiedLocations();
+		for(Location loc : occLocs)
+		{
+			if(gui.grid().get(loc) instanceof PowerUp)
+				return true;
+		}
+		return false;
+	}
+	
+	//Refreshes the power ups on the board.
+	public void refreshPowerUps()
+	{
+		placeRainPieces();
+		placeBlast();
+		placeColCrusher();
+		placeColorReversal();
+	}
+}

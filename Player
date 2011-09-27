@@ -1,0 +1,60 @@
+import java.util.ArrayList;
+
+/*
+ * Player simulates a person who would play a game of Connect 4. Each Player has their 
+ * own Piece and a board in which to place their Piece.
+ */
+public class Player
+{
+	private ArrayList<Piece> pieceList;
+	private Connect4Board board;
+	
+	//Constructs a new Player object with piece color "c" and Connect4Board b.
+	public Player(String c, Connect4Board b)
+	{
+		pieceList = fillPieceList(c);
+		board = b;
+	}
+	
+	//Places this objects Piece into column col on the board.
+	public void place(int col)
+	{ board.place(getPiece(), col); }
+	
+	//Returns true if column col is a valid position on the Connect 4 board.
+	public boolean checkCol(int col)
+	{ 
+		if(!board.isValid(0, col))
+			return false;
+		return board.getBoard()[0][col] == null;
+	}
+	
+	//Returns this player's Piece.
+	public Piece getPiece()
+	{ return pieceList.remove(0); }
+	
+	//Returns the board this player is using.
+	public Connect4Board board()
+	{ return board; }
+	
+	//Sets this Player's Piece to either a RedPiece or a BlackPiece.
+	private Piece setPiece(String color)
+	{
+		if(color.equalsIgnoreCase("RRRR"))
+			return new RedPiece();
+		else
+			return new BlackPiece();
+	}
+	
+	//Fills pieceList with 150 Pieces of color "c."
+	private ArrayList<Piece> fillPieceList(String c)
+	{
+		ArrayList<Piece> temp = new ArrayList<Piece>();
+		for(int i = 0; i < 500; i++)
+			temp.add(setPiece(c));
+		return temp;
+	}
+	
+	//Returns Player in String form.
+	public String toString()
+	{ return pieceList.get(0) + ""; }
+}

@@ -1,0 +1,37 @@
+import info.gridworld.actor.Actor;
+import info.gridworld.grid.Grid;
+import info.gridworld.grid.Location;
+
+/*
+ * PowerUp simulates a power up in a Connect 4 game. Each power up has the grid (GUI) and 
+ * the board (text based). Each power up manipulates the grid and board in some way, 
+ * altering the game. Power ups are only placed in the Grid and not the Connect4Board.
+ */
+public class PowerUp extends Piece
+{
+	protected Grid<Actor> grid;
+	protected Connect4Board board;
+	
+	//Constructs a new PowerUp object with grid gr and Connect4Board b.
+	public PowerUp(Grid<Actor> gr, Connect4Board b)
+	{
+		board = b;
+		grid = gr;
+	}
+	
+	//Returns a random location within 2 <= row < 6 and 0 <= col < 6. If the random 
+//location isn't empty, a different location is chosen.
+	public Location randomLoc()
+	{
+		int row = (int)(Math.random()*4) + 2;
+		int col = (int)(Math.random()*grid.getNumCols());
+		Location loc = new Location(row, col);
+		if(grid.get(loc) == null)
+			return loc;
+		return randomLoc();
+	}
+	
+	//Places this object at location loc in the grid.
+	public void place(Location loc)
+	{ putSelfInGrid(grid, loc); }
+}

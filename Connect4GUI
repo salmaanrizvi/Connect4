@@ -1,0 +1,69 @@
+import info.gridworld.grid.*;
+import info.gridworld.actor.*;
+
+/*
+ * Connect4GUI simulates a graphical version of Connect 4. The GUI has a Grid of Actors 
+ * and a Connect4Board.
+ */
+public class Connect4GUI
+{
+	private Grid<Actor> gr;
+	private Connect4Board board;
+	private ActorWorld world;
+	
+	//Constructs a new Connect4GUI object.
+	public Connect4GUI()
+	{ 
+		gr = new BoundedGrid<Actor>(6, 6);
+		board = new Connect4Board();
+		world = new ActorWorld(gr);
+	}
+	
+	//Returns ActorWorld world.
+	public ActorWorld world()
+	{ return world; }
+	
+	//Adds Player p's piece to column col on the grid.
+	public Actor add(Player p, int col)
+	{
+		Location loc = new Location(getValidRow(p, col), col);
+		Piece piece = p.getPiece();
+		Actor a = gr.put(loc, piece);
+		
+//Checks whether or not a is a Blast object and if it is, the piece
+//in that location is dropped down one more row after the adjacent pieces 
+//have been blasted.
+		if(a != null && a instanceof Blast)
+		{
+			a.act();
+			Location loc2 = new Location(loc.getRow() + 1, loc.getCol());
+			if(gr.isValid(loc2))
+			{
+				gr.put(new Location(loc.getRow()+1, loc.getCol()), p.getPiece());
+				gr.remove(loc);
+			}
+			world.show();
+			board.getBoard()[loc.getRow()][col] = null;
+			if(board.isValid(loc.getRow() + 1, col))
+				board.getBoard()[loc.getRow() + 1][col] = p.getPiece();
+			else
+				board.getBoard()[loc.getRow()][col] = p.getPiece();
+		}
+		else if(a != null)
+			a.act();
+		return a;
+	}
+	
+	//Returns the row in which Player p's piece dropped to in column col, -1 if column 
+//was full. Piece is also placed into the Connect4Board (text version).
+	public int getValidRow(Player p, int col)
+	{ return board.place(p.getPiece(), col); }
+	
+	//Returns Grid gr.
+	public Grid<Actor> grid()
+	{ return gr; }
+	
+	//Returns Connect4Board board.
+	public Connect4Board board()
+	{ return board; }
+}

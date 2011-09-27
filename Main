@@ -1,0 +1,12 @@
+/*
+ * Runs the Connect 4 game.
+ */
+public class Main
+{
+	//Main method to run Connect 4.
+	public static void main(String[] args)
+	{
+		guiController guiC = new guiController();
+		guiC.playConnect4();
+	}
+}

@@ -1,0 +1,9 @@
+/*
+ * RedPiece represents a red playing piece that a player uses in a Connect 4 game.
+ */
+public class RedPiece extends Piece
+{
+	//Constructs a new RedPiece object.
+	public RedPiece()
+	{ super("Red"); }
+}
