@@ -1,0 +1,46 @@
+import javax.swing.JOptionPane;
+import info.gridworld.actor.Actor;
+import info.gridworld.grid.Grid;
+import info.gridworld.grid.Location;
+
+/*
+ * ColCrusher simulates a power up which completely wipes out a whole column. Other power 
+ * ups and all pieces within that row are removed.
+ */
+public class ColCrusher extends PowerUp
+{
+	//Constructs a new ColCrusher object with Grid gr and Connect4Board b.
+	public ColCrusher(Grid<Actor> gr, Connect4Board b)
+	{ super(gr, b); }
+	
+	//Crushes the column in which this object was placed.
+	public void act()
+	{
+		clearConnect4Board();
+		int col = getLocation().getCol();
+		for(int row = 0; row < grid.getNumRows(); row++)
+			grid.remove(new Location(row, col));
+		JOptionPane.showMessageDialog(null, "COLUMN CRUSHER!!", "Power Up!", 
+JOptionPane.OK_OPTION);
+	}
+	
+	//Has the same effect as act() except pieces are crushed from the Connect4Board.
+	public void clearConnect4Board()
+	{
+		int col = getLocation().getCol();
+		for(int row = 0; row < board.size(); row++)
+			board.getBoard()[row][col] = null;
+	}
+	
+	//Creates a random location between row 0 and 3 and within any valid column. If 
+	//location isn't empty, a new location is found.
+	public Location randomLoc()
+	{
+		int row = (int)(Math.random()*3);
+		int col = (int)(Math.random()*grid.getNumCols());
+		Location loc = new Location(row, col);
+		if(grid.get(loc) == null)
+			return loc;
+		return randomLoc();
+	}
+}
