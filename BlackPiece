@@ -1,0 +1,9 @@
+/*
+ * BlackPiece represents a black playing piece that a player uses in a Connect 4 game.
+ */
+public class BlackPiece extends Piece
+{
+	//Constructs a new BlackPiece object.
+	public BlackPiece()
+	{ super("Black"); }
+}

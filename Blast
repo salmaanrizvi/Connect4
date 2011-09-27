@@ -1,0 +1,44 @@
+import info.gridworld.actor.Actor;
+import info.gridworld.grid.Grid;
+import info.gridworld.grid.Location;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+
+/*
+ * Blast simulates a power up that blasts away all adjacent pieces.
+ */
+public class Blast extends PowerUp
+{	
+	//Constructs a new Blast object with Grid gr and Connect4Board b.
+	public Blast(Grid<Actor> gr, Connect4Board b)
+	{ super(gr, b); }
+	
+	//Blasts all adjacent locations to this object.
+	public void act()
+	{
+		blastConnect4Board();
+		List<Location> occAdjLocs = grid.getOccupiedAdjacentLocations(getLocation());
+		for(Location loc : occAdjLocs)
+		{ 
+			if(grid.get(loc) instanceof BlackPiece
+				   || grid.get(loc) instanceof RedPiece)
+				grid.remove(loc);
+		}
+		JOptionPane.showMessageDialog(null, "YOU GOT BLASTED!!", "Power Up!", 
+JOptionPane.OK_OPTION);
+	}
+	
+	//Has the same effect as the act method except pieces are blasted from the 
+//Connect4Board.
+	private void blastConnect4Board()
+	{
+		Piece[][] temp = board.getBoard();
+		List<Location> occAdjLocs = grid.getOccupiedAdjacentLocations(getLocation());
+		for(Location loc : occAdjLocs)
+		{ 
+			if(temp[loc.getRow()][loc.getCol()] != null)
+				temp[loc.getRow()][loc.getCol()] = null;
+		}
+	}
+}
