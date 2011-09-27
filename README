@@ -1,0 +1,15 @@
+Connect 4: Powered Up!
+Copyright © Salmaan Rizvi
+Version 1.0
+
+This code produced a game of Connect 4, in the classic sense, with both a GUI and text-based output. Modifications to the game include Power Ups. Included power ups are:
+
+* Blast: Blasts all adjacent pieces away (up to 8 pieces). Blast can be found anywhere on the board.
+
+* Column Crusher: "Crushes" an entire column by removing all pieces in the column power was found. Both pieces and other power ups are removed. Column crushers are found anywhere in the top 3 rows.
+
+* Color Reversal: All pieces currently on the game board are reversed in color such that red pieces become black pieces and vice versa. The players are still their respective colors.
+
+* Rain Pieces: Three black and three red pieces are randomly dropped onto the game board.
+
+All entries to the game board are done via text input from an input prompt. To play, run the package files through a program such as Eclipse or Dr. Java.
