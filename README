@@ -2,7 +2,7 @@ Connect 4: Powered Up!
 Copyright © Salmaan Rizvi
 Version 1.0
 
-This code produced a game of Connect 4, in the classic sense, with both a GUI and text-based output. Modifications to the game include Power Ups. Included power ups are:
+This code produced a game of Connect 4, in the classic sense, with both a GUI and text-based output. Modifications to the game include Power Ups. These power ups are invisible to the users playing the game and are randomly placed on the game board. Included power ups are:
 
 * Blast: Blasts all adjacent pieces away (up to 8 pieces). Blast can be found anywhere on the board.
 
